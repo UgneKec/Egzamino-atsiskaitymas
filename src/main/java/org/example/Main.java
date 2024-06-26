@@ -45,7 +45,18 @@ public class Main {
             System.out.println(containsUsername);
 
 //            •	Esamo vartotojo prisijungimas (pozityvus ir negatyvus testas)
-
+            //Atsijungiame
+            clickOnElement(By.xpath("/html/body/nav/div/ul[2]/a"));
+            elementTextContainsString(By.xpath("/html/body/div/form/div/span[1]"), "Sėkmingai atsijungėte");
+            // Prisijungiame su esamu vartptpju
+            sendKeysToInputField(By.xpath("/html/body/div/form/div/input[1]"), username);
+            sendKeysToInputField(By.xpath("/html/body/div/form/div/input[2]"), "testavimas");
+            clickOnElement(By.xpath("/html/body/div/form/div/button"));
+            //Tikriname ar sėkmingai prisijungėme. Matomas pasirinkimas Logout ir atvaizduotas prisijungusio vartotojo userName
+            boolean containsLogout2 = elementTextContainsString(By.xpath("/html/body/nav/div/ul[2]/a"), "Logout");
+            boolean containsUsername2 = elementTextContainsString(By.xpath("/html/body/nav/div/ul[2]/a"), username);
+            System.out.println(containsLogout2);
+            System.out.println(containsUsername2);
 
 //        •	Naujo įrašo sukūrimas (pozityvus ir negatyvus testas)
             sendKeysToInputField(By.id("sk1"), "999");
@@ -59,20 +70,22 @@ public class Main {
             clickOnElement(By.xpath("/html/body/nav/div/ul[1]/li/a"));
             System.out.println(findRecordInTable(999, 998, "-", 1));
 
-////        •	Tik autorizuoti vartotojai gali naudotis sistema (pozityvus ir negatyvus testas)
-//            clickOnElement(By.xpath("/html/body/nav/div/ul[1]/li/a"));
-//            System.out.println(browser.getCurrentUrl());
-//            innerUrl = browser.getCurrentUrl();
-//            clickOnElement(By.xpath("/html/body/nav/div/ul[2]/a"));
-//            browser.get(innerUrl);
+//            •	Tik autorizuoti vartotojai gali naudotis sistema (pozityvus ir negatyvus testas)
+            //Pasiemame vidinio psl URL
+            innerUrl = browser.getCurrentUrl();
+            //Atsijungiame
+            clickOnElement(By.xpath("/html/body/nav/div/ul[2]/a"));
+            elementTextContainsString(By.xpath("/html/body/div/form/div/span[1]"), "Sėkmingai atsijungėte");
+            //Bandome pasiekti URL
+            browser.get(innerUrl);
+            System.out.println("Vedame url: " + innerUrl + ". Gauname URL: " + browser.getCurrentUrl());
+
         }finally {
             // Padidinti vienu ir išsaugoti skaitiklį counter
             saveCounter(counter + 1);
 
-//            closeBrowser();
+            closeBrowser();
         }
-
-
     }
     public static void setUp(String url){
         System.setProperty(
@@ -143,11 +156,5 @@ public class Main {
             }
         }
         return false;
-    }
-    public static void scrollIntoView(By locator){
-        WebElement element = browser.findElement(locator);
-        JavascriptExecutor js = (JavascriptExecutor) browser;
-        // Slenkame paskutinis elementas būtų matomas
-        js.executeScript("arguments[0].scrollIntoView(true);", element);
     }
 }

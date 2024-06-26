@@ -50,7 +50,7 @@ public class CalculatorTestCase {
         //Atsijungiame
         Main.clickOnElement(By.xpath("/html/body/nav/div/ul[2]/a"));
 
-        //Užpildome reikalingus laukus su esamo vartotojo duomenimis
+        //Užpildome reikalingus laukus su neteisingo vartotojo duomenimis
         Main.sendKeysToInputField(By.xpath("/html/body/div/form/div/input[1]"), "");
         Main.sendKeysToInputField(By.xpath("/html/body/div/form/div/input[2]"), "testavimas");
         //Paspaudziama "Prisijungti"
@@ -123,10 +123,10 @@ public class CalculatorTestCase {
         //Atsijungiame
         Main.clickOnElement(By.xpath("/html/body/nav/div/ul[2]/a"));
 
-        //Prisijungti nauju vartotoju
+        //Prisijungti nauju vartotoju ir meginti prieiti prie vidinio puslapio
         // Padidinti vienu ir išsaugoti skaitiklį counter
         Main.saveCounter(Main.counter + 1);
-        // Paimti counter reikšmę iš failo ir sukurti unikalu username
+        // Paimti counter reikšmę iš failo ir sukurti unikalų username
         Main.counter = Main.readCounter();
         String username = "Testavimas" + Main.counter;
         //Paspaudžiame "Sukurti naują paskyrą"
@@ -137,22 +137,26 @@ public class CalculatorTestCase {
         Main.sendKeysToInputField(By.id("passwordConfirm"), "testavimas");
         //paspaudziame "Sukurti"
         Main.clickOnElement(By.xpath("//*[@id=\"userForm\"]/button"));
+        //Einame tiesiai i vidinipuslapi
         Main.browser.get(Main.innerUrl);
         String resultActual = Main.browser.getCurrentUrl();
         Assert.assertEquals(resultActual, Main.innerUrl);
     }
     @Test (priority = 10)
     static void patikrintiAutorizuotoVartotojoGalimybesMatytiRegistraNegatyvusTestas(){
-        //Nueiname i irasu registra
+        //Nueiname į įrašų registrą
         Main.clickOnElement(By.xpath("/html/body/nav/div/ul[1]/li/a"));
         //Nusikopijuojame jo URL adresa
         Main.innerUrl = Main.browser.getCurrentUrl();
+        //Atsijungiame
         Main.clickOnElement(By.xpath("/html/body/nav/div/ul[2]/a"));
 
-        //Su neautorizuotu vetotoju bandeome pasieki vidini psl
+        //Su neautorizuotu varotoju bandome pasieki vidinį psl
         Main.browser.get(Main.innerUrl);
         String resultActual = Main.browser.getCurrentUrl();
+        //Tikriname, kad mus nukreipia i login puslapi
         Assert.assertNotEquals(resultActual, Main.innerUrl);
+        Assert.assertEquals(resultActual, "http://localhost:8080/prisijungti");
     }
     @AfterClass
     public static void closeBrowserAndIncrementCounter(){
